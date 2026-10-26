@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+node_modules/
+state/
+*.sqlite3
+*.db
+.env
+*.env
+film/out/
+film/stills/
+*.mp4
+.mcp.json
+static/runner/replica-runner.zip

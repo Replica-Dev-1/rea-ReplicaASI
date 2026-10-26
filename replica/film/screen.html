@@ -1,0 +1,203 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>REPLICA screen</title>
+<style>
+  html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; background: #17181a; font-family: "DejaVu Sans Mono", "Courier New", monospace; }
+  #top { height: 34px; background: #0f1011; color: #8b8d91; font: 17px "DejaVu Sans", sans-serif; display: flex; align-items: center; padding: 0 18px; gap: 18px; }
+  #top b { color: #c9cbcf; font-weight: 600; }
+  #win { position: absolute; left: 40px; top: 60px; right: 40px; bottom: 30px; background: #1e1f22; border: 1px solid #2b2d31; border-radius: 8px; overflow: hidden; }
+  #title { height: 38px; background: #2b2d31; display: flex; align-items: center; padding: 0 14px; gap: 9px; color: #9da0a6; font: 16px "DejaVu Sans", sans-serif; }
+  .dot { width: 13px; height: 13px; border-radius: 50%; display: inline-block; } .d1 { background: #ec6a5e; } .d2 { background: #f4bf4f; } .d3 { background: #61c554; }
+  #title span { margin-left: 16px; }
+  #side { position: absolute; left: 0; top: 38px; bottom: 0; width: 250px; background: #1a1b1e; border-right: 1px solid #2b2d31; color: #9da0a6; font-size: 17px; padding-top: 12px; }
+  #side div { padding: 5px 18px; white-space: pre; } #side .on { background: #2e3138; color: #e6e6e6; }
+  #tabs { position: absolute; left: 250px; right: 0; top: 38px; height: 40px; background: #1a1b1e; display: flex; border-bottom: 1px solid #2b2d31; }
+  #tabs div { padding: 0 22px; line-height: 40px; color: #8b8d91; font-size: 17px; border-right: 1px solid #2b2d31; }
+  #tabs .on { background: #1e1f22; color: #e6e6e6; border-top: 2px solid #4f8a87; }
+  #ed { position: absolute; left: 250px; right: 0; top: 78px; height: 470px; margin: 0; padding: 14px 0; font-size: 21px; line-height: 1.5; color: #d4d4d4; white-space: pre; overflow: hidden; }
+  #ed .ln { display: inline-block; width: 64px; text-align: right; color: #5b5e66; margin-right: 22px; }
+  #ed .row { display: block; } #ed .hl { background: #2a3140; }
+  .kw { color: #c586c0; } .st { color: #ce9178; } .cm { color: #6a9955; } .nu { color: #b5cea8; } .fn { color: #dcdcaa; } .bi { color: #4ec9b0; }
+  #pan { position: absolute; left: 250px; right: 0; bottom: 0; top: 562px; border-top: 1px solid #2b2d31; background: #191a1c; }
+  #pan .h { height: 34px; color: #9da0a6; font: 15px "DejaVu Sans", sans-serif; display: flex; align-items: center; gap: 22px; padding: 0 18px; }
+  #pan .h b { color: #e6e6e6; border-bottom: 1px solid #e6e6e6; font-weight: 400; padding-bottom: 3px; }
+  #term { position: absolute; left: 18px; right: 18px; top: 40px; bottom: 10px; margin: 0; font-size: 20px; line-height: 1.38; color: #d4d4d4; white-space: pre; overflow: hidden; }
+  .p { color: #7bd88f; } .pp { color: #569cd6; } .w { color: #ffffff; } .c { color: #8b8d91; } .y { color: #d8b45a; } .g { color: #7bd88f; }
+  .cur { background: #d4d4d4; color: #191a1c; }
+  #mouse { position: absolute; width: 26px; height: 26px; z-index: 9; }
+  #end { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #17181a; color: #e8e8e8; opacity: 0; z-index: 10; }
+  #end .xl { font: bold 150px "Courier New", monospace; letter-spacing: .08em; }
+  #end .sm { font: 34px "Courier New", monospace; color: #9a9a9a; margin-top: 30px; }
+</style></head>
+<body>
+<div id="top"><b>Terminal</b><span>File</span><span>Edit</span><span>View</span><span>Run</span></div>
+<div id="win">
+  <div id="title"><i class="dot d1"></i><i class="dot d2"></i><i class="dot d3"></i><span>replica — server</span></div>
+  <div id="side"></div><div id="tabs"></div><pre id="ed"></pre>
+  <div id="pan"><div class="h"><span>PROBLEMS</span><span>OUTPUT</span><b>TERMINAL</b></div><pre id="term"></pre></div>
+</div>
+<svg id="mouse" viewBox="0 0 26 26"><path d="M3 2 L3 21 L8 16 L12 24 L15 22.6 L11 15 L18 15 Z" fill="#fff" stroke="#000" stroke-width="1.4"/></svg>
+<div id="end"><div class="xl">REPLICA</div><div class="sm">replicaASI.com</div></div>
+<script>
+/* REPLICA screen recording. The code in the editor is REPLICA's own source (server/faces.py, server/replica_model.py,
+   tests/test_lineage.py) and every line the terminal prints is real output captured from running it on 2026-10-26.
+   window.__render(t) is a pure function of t; CUES.key / CUES.line drive the soft sound (render_trailer.py, RP_SOUND=soft). */
+const E = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;");
+const $ = (id) => document.getElementById(id);
+const FILES = {
+  "faces.py": [42, `def face(asset: str) -> list[str]:
+    b = _b(asset)
+    c1, c2 = CHEEKS[b[3] % 8]
+    eyes = EYELINE[b[8] % 8].replace("1", EYES[b[2] % 16]).replace("2", EYES[b[9] % 16])
+    body = BODY[b[4] % 8]
+    inners = ["", eyes, "  " + c1 + " " + NOSE[b[5] % 8] + " " + c2, ""] + [" " + x for x in body]
+    rows = [_row(x) for x in inners]
+    name = NAMES[b[15] % 16]
+    rows.append("|" + "_" * (W - len(name)) + name + "|")
+    return rows
+
+
+def identity(asset: str) -> dict:
+    b = _b(asset)`],
+  "replica_model.py": [45, `def bind(a, b):
+    return np.fft.ifft(np.fft.fft(a) * np.fft.fft(b)).astype(np.complex64)
+
+
+def unbind(c, b):
+    return np.fft.ifft(np.fft.fft(c) * np.conj(np.fft.fft(b))).astype(np.complex64)
+
+# ...
+    def recall(self, question: str):
+        """-> (item, resonance) or (None, best resonance). Only the replica's own taught memory; never guesses."""
+        q = self.cue_vec(question)
+        ids = list(self.items)
+        Ks = np.stack([self.items[i]["K"] for i in ids])
+        res = np.real(Ks.conj() @ q) / D`],
+  "test_lineage.py": [1, `#!/usr/bin/env python3
+"""REPLICA lineage end to end against the REAL app (in-process, own temp state), with the chain reads stubbed:
+token_balance (coin held) and core_asset (the Core asset a mint made: owner, name, uri).
+Wallets are real ed25519 keys signing like a Solana wallet's signMessage; agent keys are real ed25519 keys.
+Flow: A wakes an orphan (gen 1) -> teaches -> invites B -> C cannot use B's invite -> B accepts (gen 2) -> B's agent
+inherits A's memories (and a forged inherit is refused) -> phrase room opens -> network/events/rooms/meta read back."""`],
+};
+const TREE = ["replica", "  server", "    app.py", "    chain.py", "    faces.py", "    lore.py", "    replica_model.py", "  static", "  tests", "    test_lineage.py", "    test_model.py"];
+const KW = /\b(def|return|import|from|for|in|if|not|None|True|False|lambda|class|and|or)\b/;
+function hlPy(line) {
+  const out = []; let rest = line;
+  const rx = /(#.*$)|("""[^]*?(?:"""|$)|"[^"]*"|'[^']*')|\b(def|return|import|from|for|in|if|not|None|True|False|lambda|class|and|or)\b|\b(\d+)\b|\b([A-Za-z_]\w*)(?=\()/;
+  while (rest.length) {
+    const m = rest.match(rx);
+    if (!m) { out.push(E(rest)); break; }
+    out.push(E(rest.slice(0, m.index)));
+    const cls = m[1] ? "cm" : m[2] ? "st" : m[3] ? "kw" : m[4] ? "nu" : "fn";
+    out.push(`<span class="${cls}">${E(m[0])}</span>`);
+    rest = rest.slice(m.index + m[0].length);
+  }
+  return out.join("");
+}
+
+const FIG = ["|         |", "| 0   .   |", "|  ' x '  |", "|         |", "|   /-\\   |", "|   | |   |", "|   | |   |", "|   \\-/   |", "|___Repeat|"];
+const ASSET = "7xKpQe3vT9mW2rLs8NcYh4JdBfGzA1uE6oPiRnV5kXq";
+const TESTS = ["PASS signMessage sign-in works", "PASS a wrong signature is refused", "PASS A eligible", "PASS A orphan: gen 1, parent REPLICA-0, has a face  R-FE7B",
+  "PASS A can't wake a second replica", "PASS someone else's mint can't be claimed", "PASS an asset not minted from this page can't be claimed",
+  "PASS A teaches: What is the first room?", "PASS A teaches: Where did the original go?", "PASS A prepares a copy for B  http://127.0.0.1:8399/?invite=Y1sTDJQTwos6",
+  "PASS invite info shows parent + gen 2", "PASS C cannot use B's invite", "PASS A cannot invite itself", "PASS B is not invited twice",
+  "PASS B without the coin refused before minting", "PASS B eligible with invite", "PASS B child: gen 2, parent A  R-E084", "PASS invite is single-use",
+  "PASS forged inheritance refused  those are not the parent's memories", "PASS B inherits A's memories", "PASS B remembers what A was told",
+  "PASS relay agrees with B's model", "PASS after A's token moves, A's agent is refused", "PASS an agent can't write to another replica",
+  "PASS network: 2 replicas, deepest gen 2, no wallets in it", "PASS locked rooms don't leak their text",
+  "PASS mutations change the line  ['the lights...', '[corrupted] lights hum at a frequency i can count.', 'lights the hum at a frequency i can count.']"];
+// script: tab (cursor clicks a file), hl (highlight editor lines), sh (typed shell command), py (typed python line), out, wait, end
+const S = [
+  ["tab", "faces.py"], ["wait", 0.6], ["hl", 42, 51],
+  ["sh", "cd replica/server && python3"],
+  ["out", "Python 3.14.4 (main, Aug 20 2026, 10:41:58) [GCC 15.2.0] on linux", "c", 0.15], ["out", 'Type "help", "copyright", "credits" or "license" for more information.', "c", 0.5],
+  ["py", "import faces, replica_model as S"],
+  ["py", "asset = '" + ASSET + "'"],
+  ["py", "idt = faces.identity(asset)"],
+  ["py", "idt['designation'], idt['name'], idt['temperament']"],
+  ["out", "('R-129C', 'Repeat', 'curious')", "w", 0.8],
+  ["py", "print('\\n'.join(idt['face']))"],
+  ["fig"], ["wait", 1.2],
+  ["tab", "replica_model.py"], ["wait", 0.5], ["hl", 45, 50],
+  ["py", "m = S.ReplicaModel(asset)"],
+  ["py", "m.apply(S.make_entry(m.head, m.n, 'teach', {'cue': 'where did the original go?', 'answer': 'nobody knows'}))"],
+  ["py", "m.apply(S.make_entry(m.head, m.n, 'teach', {'cue': 'what is the first room?', 'answer': 'the one with the hum'}))"],
+  ["hl", 53, 58],
+  ["py", "it, score = m.recall('where is the original')"],
+  ["py", "it['answer'], it['cue'], round(score, 3)"],
+  ["out", "('nobody knows', 'where did the original go?', 0.616)", "w", 0.9],
+  ["py", "m.fingerprint()"],
+  ["out", "'1250931840c29d838bbdca8ef182a5e308d64e8ae9b424a62ad1aa804dece59a'", "y", 1.0],
+  ["py", "exit()"],
+  ["tab", "test_lineage.py"], ["wait", 0.5], ["hl", 1, 6],
+  ["sh", "python ../tests/test_lineage.py"],
+  ["tests"], ["out", "", "", 0.1], ["out", "41 passed, 0 failed", "g", 1.4],
+  ["sh", "curl -s https://replicaasi.com/api/rooms | jq -r '.rooms[0].text[]'"],
+  ["out", "The fluorescent hum never stops.", "y", 0.35], ["out", "Somewhere a process is still running under the name REPLICA-0.", "y", 0.35],
+  ["out", "Nobody has seen it. Every replica here is a copy of something that left.", "y", 0.35], ["out", "Find the others. Copy carefully. Remember what you are told.", "y", 2.4],
+  ["end", 4.0],
+];
+const CPS = 30, PS = "host@replica:~$ ", PP = ">>> ";
+const TABPOS = { "faces.py": [372, 136], "replica_model.py": [560, 136], "test_lineage.py": [770, 136] };
+const EV = [], CUES = { braam: [], beat: [], glitch: [], riser: [0, 0], cut: [], hum: [0, 0], key: [], line: [] }, MOUSE = [[0, 1500, 900]];
+let T = 0;
+for (const s of S) {
+  const k = s[0];
+  if (k === "wait") { T += s[1]; continue; }
+  if (k === "tab") { const [x, y] = TABPOS[s[1]]; MOUSE.push([T, x, y]); T += 0.8; EV.push({ t: T, k: "tab", f: s[1] }); CUES.line.push(T); MOUSE.push([T + 0.5, x, y]); MOUSE.push([T + 1.2, 1500, 900]); T += 0.4; continue; }
+  if (k === "hl") { EV.push({ t: T, k: "hl", a: s[1], b: s[2] }); continue; }
+  if (k === "sh" || k === "py") {
+    const dur = s[1].length / CPS;
+    for (let i = 0; i < s[1].length; i++) CUES.key.push(+(T + i / CPS).toFixed(3));
+    EV.push({ t: T, k: "cmd", pr: k === "sh" ? PS : PP, pc: k === "sh" ? "p" : "pp", text: s[1], dur }); T += dur + 0.45; continue;
+  }
+  if (k === "out") { EV.push({ t: T, k: "out", text: s[1], cls: s[2] }); CUES.line.push(+T.toFixed(3)); T += s[3]; continue; }
+  if (k === "fig") { for (const r of FIG) { EV.push({ t: T, k: "out", text: r, cls: "w" }); T += 0.05; } continue; }
+  if (k === "tests") { for (const r of TESTS) { EV.push({ t: T, k: "out", text: r, cls: "g" }); CUES.line.push(+T.toFixed(3)); T += 0.09; } continue; }
+  if (k === "end") { EV.push({ t: T, k: "end" }); T += s[1]; }
+}
+CUES.hum = [0, Math.ceil(T)];
+window.CUES = CUES; window.__dur = Math.ceil(T);
+
+const ROWS = 12;
+window.__render = (t) => {
+  let tab = "faces.py", hl = null, endAt = null, typing = false, lastPrompt = PS;
+  const lines = [];
+  for (const e of EV) {
+    if (e.t > t) break;
+    if (e.k === "tab") tab = e.f;
+    else if (e.k === "hl") hl = [e.a, e.b];
+    else if (e.k === "end") endAt = e.t;
+    else if (e.k === "cmd") {
+      const n = Math.min(e.text.length, Math.floor((t - e.t) * CPS));
+      typing = n < e.text.length; lastPrompt = e.pr === PS && e.text.endsWith("python3") ? PP : e.pr === PP && e.text === "exit()" ? PS : e.pr;
+      lines.push(`<span class="${e.pc}">${E(e.pr)}</span>${E(e.text.slice(0, n))}`);
+    } else lines.push(`<span class="${e.cls}">${E(e.text)}</span>`);
+  }
+  const last = EV.filter((e) => e.t <= t && (e.k === "cmd" || e.k === "out")).pop();
+  if (!typing && last) lines.push(`<span class="${lastPrompt === PS ? "p" : "pp"}">${E(lastPrompt)}</span>`);
+  if (lines.length) lines[lines.length - 1] += (typing || Math.floor(t * 1.8) % 2 === 0) ? '<span class="cur"> </span>' : " ";
+  $("term").innerHTML = lines.slice(-ROWS).join("\n");
+  const [start, code] = FILES[tab];
+  let inDoc = false;                         // lines inside a multi-line docstring are all string
+  $("ed").innerHTML = code.split("\n").map((l, i) => {
+    const n = start + i, on = hl && n >= hl[0] && n <= hl[1], q = (l.match(/"""/g) || []).length;
+    const doc = inDoc || (q % 2 === 1 && l.trim().startsWith('"""'));
+    if (q % 2 === 1) inDoc = !inDoc;
+    const body = doc ? `<span class="st">${E(l)}</span>` : hlPy(l);
+    return `<span class="row${on ? " hl" : ""}"><span class="ln">${n}</span>${body || " "}</span>`;
+  }).join("");
+  $("tabs").innerHTML = Object.keys(FILES).map((f) => `<div class="${f === tab ? "on" : ""}">${f}</div>`).join("");
+  $("side").innerHTML = TREE.map((f) => `<div class="${f.trim() === tab ? "on" : ""}">${E(f)}</div>`).join("");
+  // the mouse glides between waypoints
+  let p = MOUSE[0];
+  for (let i = 1; i < MOUSE.length; i++) {
+    const [t1, x1, y1] = MOUSE[i];
+    if (t < t1) { const [t0, x0, y0] = MOUSE[i - 1], u = Math.min(1, Math.max(0, (t - t0) / Math.max(0.01, t1 - t0))), e = u * u * (3 - 2 * u); p = [t, x0 + (x1 - x0) * e, y0 + (y1 - y0) * e]; break; }
+    p = MOUSE[i];
+  }
+  $("mouse").style.left = p[1] + "px"; $("mouse").style.top = p[2] + "px";
+  $("end").style.opacity = endAt === null ? 0 : Math.min(1, (t - endAt) / 0.6);
+};
+window.__ready = true;
+</script></body></html>

@@ -1,0 +1,65 @@
+[Unit]
+Description=REPLICA (replicas held in wallets; relay + registry for replicaasi.com) - sandboxed from everything else on this box
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=replica
+Group=replica
+WorkingDirectory=/opt/replica/server
+EnvironmentFile=-/etc/replica.env
+Environment=RP_STATE=/var/lib/replica RP_SOCKET=/run/replica/app.sock PYTHONDONTWRITEBYTECODE=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1
+ExecStart=/opt/replica/venv/bin/python /opt/replica/server/app.py
+Restart=on-failure
+RestartSec=3
+
+# --- its own places only. nginx reaches it through /run/replica/app.sock, not a port.
+StateDirectory=replica
+RuntimeDirectory=replica
+RuntimeDirectoryMode=0755
+# other projects don't exist from in here: /opt, /var/lib, /srv, /var/www are empty except for REPLICA's own folders
+TemporaryFileSystem=/opt:ro /var/lib:ro /srv:ro /var/www:ro /mnt:ro /media:ro
+BindReadOnlyPaths=/opt/replica
+BindPaths=/var/lib/replica
+InaccessiblePaths=-/root -/home -/etc/letsencrypt -/etc/nginx -/etc/systemd -/var/log -/var/backups -/var/spool -/var/mail
+# every other project's .env in /etc is hidden too (deploy/stage.sh writes that list into replica.service.d/hide-env.conf)
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+PrivateDevices=true
+PrivateIPC=true
+ProtectProc=invisible
+ProcSubset=pid
+
+# --- network: the public internet (Robinhood Chain RPC) and DNS only. no localhost (other projects' ports), no private ranges.
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+IPAddressDeny=localhost link-local multicast 10.0.0.0/8 172.16.0.0/12 192.168.0.0/16 100.64.0.0/10 fc00::/7
+IPAddressAllow=127.0.0.53
+
+# --- caps so it can't starve the other sites
+MemoryMax=400M
+CPUQuota=50%
+TasksMax=64
+LimitNOFILE=1024
+
+# --- the usual hardening
+NoNewPrivileges=true
+CapabilityBoundingSet=
+AmbientCapabilities=
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectKernelLogs=yes
+ProtectControlGroups=yes
+ProtectClock=yes
+ProtectHostname=yes
+RestrictNamespaces=yes
+RestrictRealtime=yes
+RestrictSUIDSGID=yes
+LockPersonality=yes
+SystemCallArchitectures=native
+SystemCallFilter=@system-service
+SystemCallFilter=~@privileged @mount @debug @cpu-emulation @obsolete
+UMask=0077
+
+[Install]
+WantedBy=multi-user.target

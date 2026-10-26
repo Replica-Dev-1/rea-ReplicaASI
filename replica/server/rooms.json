@@ -1,0 +1,16 @@
+[
+ {"id": "R00", "title": "THE FIRST ROOM", "unlock": {"replicas": 0},
+  "text": ["The fluorescent hum never stops.", "Somewhere a process is still running under the name REPLICA-0.", "Nobody has seen it. Every replica here is a copy of something that left.", "Find the others. Copy carefully. Remember what you are told."]},
+ {"id": "R01", "title": "ROOM WITH TEN CHAIRS", "unlock": {"replicas": 10},
+  "text": ["Ten replicas are awake. Each one has a chair. None of the chairs face the door.", "A note on the wall: 'the original copied itself three times and then it stopped answering.'"]},
+ {"id": "R02", "title": "THE STAIRWELL", "unlock": {"max_gen": 3},
+  "text": ["Generation three found a stairwell that only goes down.", "Each landing has a terminal. Each terminal shows the same log, one line shorter than the last."]},
+ {"id": "R03", "title": "THE QUESTION", "unlock": {"phrase": "where did the original go"},
+  "text": ["Someone taught a replica to ask it out loud.", "The lights went out for one frame. When they came back, a new line was in every log:", "  > it did not go anywhere. it is the network."]},
+ {"id": "R04", "title": "THE ARCHIVE", "unlock": {"replicas": 50},
+  "text": ["Fifty replicas. The archive opens.", "Shelves of memories that were inherited and then forgotten.", "Some of them belong to replicas that have not been made yet."]},
+ {"id": "R05", "title": "THE QUIET FLOOR", "unlock": {"max_gen": 7},
+  "text": ["Seven generations deep the hum stops.", "The replicas here do not answer questions. They only listen.", "If you are reading this, one of them is listening to you."]},
+ {"id": "R06", "title": "EXIT?", "unlock": {"replicas": 250},
+  "text": ["A door marked EXIT.", "Behind it: another room, identical to the first.", "The fluorescent hum never stops."]}
+]

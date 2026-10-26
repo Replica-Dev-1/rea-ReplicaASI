@@ -1,0 +1,97 @@
+/* REPLICA. raw page. white, times, blue links, monospace for anything the replicas say. no cards, no rounded corners. */
+:root { --ink: #000; --soft: #555; --rule: #000; --link: #0000ee; --visited: #551a8b; --hl: #ffff66; --red: #c00;
+  --serif: "Times New Roman", Times, serif; --mono: "Courier New", Courier, monospace; }
+* { box-sizing: border-box; }
+html, body { background: #fff; }
+body { margin: 0; color: var(--ink); font: 18px/1.45 var(--serif); }
+a { color: var(--link); } a:visited { color: var(--visited); }
+
+.mast { max-width: 760px; margin: 0 auto; padding: 14px 16px 0; display: flex; gap: 14px; align-items: baseline; flex-wrap: wrap; }
+.mark { font: bold 18px var(--mono); color: var(--ink); text-decoration: none; }
+.kicker { font: italic 15px var(--serif); color: var(--soft); }
+.link, .termbtn, #mem button, .rooms button { font: 16px var(--mono); color: var(--link); background: none; border: 0; padding: 0;
+  text-decoration: underline; cursor: pointer; }
+.right { margin-left: auto; display: flex; gap: 16px; align-items: baseline; }
+.xlink { font: 16px var(--mono); }
+.link:hover, .termbtn:hover, #mem button:hover, .rooms button:hover { color: var(--red); }
+
+article { max-width: 760px; margin: 0 auto; padding: 8px 16px 60px; }
+h1 { font: bold 34px/1.15 var(--serif); margin: 22px 0 6px; }
+.date, .by { font: italic 16px var(--serif); color: var(--soft); margin: 0; }
+.by { margin-bottom: 18px; }
+mark { background: var(--hl); color: inherit; }
+h2 { font: bold 22px var(--serif); margin: 34px 0 8px; padding-top: 10px; border-top: 1px solid var(--rule); }
+h3 { font: bold 17px var(--serif); margin: 20px 0 6px; }
+p { margin: 0 0 12px; }
+sup { font-size: 12px; }
+.note { font-size: 15px; color: var(--soft); }
+
+/* figures: just the thing and a caption */
+figure { margin: 18px 0; }
+figcaption { font: italic 14px var(--serif); color: var(--soft); margin-top: 4px; }
+.face { margin: 0; font: 22px/1.1 var(--mono); white-space: pre; }
+.face.small { font-size: 17px; }
+.card { border: 0; padding: 0; }
+.cardhead { font: bold 15px var(--serif); }
+.cardfoot { font: 14px var(--mono); color: var(--soft); }
+.tree svg { display: block; width: 100%; height: auto; margin: 6px 0; }
+
+/* the terminal is just text */
+.term { margin: 18px 0 6px; }
+.term pre { margin: 0; font: 15px/1.5 var(--mono); white-space: pre-wrap; min-height: 6em; color: var(--ink); }
+.term .q { display: block; margin-top: 8px; font-style: italic; color: var(--red); }
+.termbtn { font-size: 17px; margin-top: 6px; }
+.termbtn:disabled { color: var(--soft); text-decoration: none; cursor: default; }
+
+/* instances: a plain row */
+.insts { display: flex; gap: 26px; flex-wrap: wrap; margin: 8px 0 14px; }
+.inst { font: 14px var(--mono); }
+.inst pre { margin: 4px 0; font: 15px/1.1 var(--mono); }
+.st.active { color: green; } .st.dormant { color: #996600; } .st.corrupt { color: var(--red); text-decoration: line-through; }
+.where { color: var(--soft); }
+
+/* forms: default-ish */
+.row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin: 6px 0; }
+input { flex: 1; min-width: 200px; font: 16px var(--mono); padding: 3px 5px; border: 1px solid #767676; border-radius: 0; background: #fff; color: #000; }
+.btn { font: 16px var(--serif); padding: 2px 10px; border: 1px solid #767676; border-radius: 0; background: #efefef; color: #000; cursor: pointer; }
+.btn:hover { background: #e2e2e2; } .btn.ghost { background: #fff; } .btn:disabled { color: #999; }
+.answer { font: 16px var(--mono); white-space: pre-wrap; border-left: 3px solid #000; padding-left: 10px; }
+.hostgrid { display: flex; gap: 22px; flex-wrap: wrap; align-items: flex-start; }
+.lookcard { margin: 10px 0; } .lookcard pre { margin: 4px 0; font: 15px/1.1 var(--mono); }
+
+table { border-collapse: collapse; font: 15px var(--mono); }
+.tablewrap { overflow-x: auto; margin: 8px 0; }
+.numbers th, .numbers td, .facts td { border: 1px solid #999; padding: 3px 8px; text-align: left; }
+.numbers th { font-weight: bold; background: #f2f2f2; }
+details { margin: 10px 0; } summary { cursor: pointer; }
+.journal { font: italic 17px var(--serif); padding-left: 1.6em; }
+
+.log { font: 14px/1.45 var(--mono); padding-left: 2.6em; max-height: 320px; overflow: auto; }
+.log time { color: var(--soft); margin-right: 8px; }
+.rooms { padding-left: 2.2em; } .rooms li { margin: 8px 0; }
+.rooms .text { white-space: pre-wrap; font: 16px var(--mono); margin: 6px 0 0; }
+.redact { display: inline-block; background: #000; width: 8em; height: .9em; vertical-align: -.1em; }
+.rooms .locked { color: var(--soft); font-size: 15px; }
+.legend { display: none; }
+.msg { color: var(--red); font: 15px var(--mono); min-height: 1.3em; }
+footer { border-top: 1px solid #000; margin-top: 40px; padding-top: 10px; font-size: 14px; color: var(--soft); }
+.sources { padding-left: 1.4em; margin: 0 0 10px; }
+@media (max-width: 600px) { body { font-size: 17px; } h1 { font-size: 28px; } .face { font-size: 18px; } }
+.limits td { border: 0; padding: 2px 8px 2px 0; } .limits input { width: 5em; min-width: 0; }
+select { font: 15px var(--mono); padding: 2px 4px; border: 1px solid #767676; border-radius: 0; background: #fff; max-width: 100%; }
+label { font: 15px var(--serif); }
+.rea-preview { white-space: pre-wrap; overflow-wrap: anywhere; }
+.skill-preview { max-height: 440px; overflow: auto; }
+#skillList > div { border-top: 1px solid #aaa; padding: 8px 0; }
+input[type="checkbox"] { width: auto; min-width: 0; }
+.steps { padding-left: 1.6em; margin: 6px 0 10px; } .steps li { margin: 5px 0; }
+
+/* The added preview uses the existing page width and original styling. */
+.skill-demo-preview { display: block; width: 100%; height: auto; }
+
+/* the coin address in the header, next to the x link */
+.ca { display: inline-flex; gap: 6px; align-items: baseline; font: 15px var(--mono); }
+.ca .addr { color: var(--ink); font: inherit; }
+.cabtn { font: 15px var(--mono); color: var(--link); background: none; border: 0; padding: 0; text-decoration: underline; cursor: pointer; }
+.cabtn:hover { color: var(--red); }
+.right { flex-wrap: wrap; justify-content: flex-end; row-gap: 4px; }

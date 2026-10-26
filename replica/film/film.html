@@ -1,0 +1,162 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>REPLICA film v2</title>
+<style>
+  html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; background: #0d1424; }
+  .layer { position: absolute; inset: 0; }
+  .mono { font-family: "DejaVu Sans Mono", ui-monospace, Menlo, monospace; }
+  .sans { font-family: "DejaVu Sans", "Helvetica Neue", Arial, sans-serif; }
+  .serif { font-family: "DejaVu Serif", Georgia, serif; }
+  /* --- CH0 news package (made up channel) --- */
+  #news { background: radial-gradient(ellipse at 50% 40%, #1b2a4a 0%, #0d1424 70%); color: #fff; }
+  #bug { position: absolute; left: 60px; top: 50px; display: flex; gap: 14px; align-items: center; }
+  #bug .logo { font: 800 40px "DejaVu Sans", sans-serif; letter-spacing: .02em; border: 4px solid #fff; padding: 2px 12px; }
+  #bug .live { background: #e4572e; font: 700 26px "DejaVu Sans", sans-serif; padding: 6px 14px; }
+  #bug .dram { font: 20px "DejaVu Sans Mono", monospace; color: #aab6cf; }
+  #stage { position: absolute; left: 160px; right: 160px; top: 170px; height: 560px; }
+  #lower { position: absolute; left: 0; right: 0; bottom: 150px; }
+  #lower .tag { display: inline-block; background: #e4572e; color: #fff; font: 700 28px "DejaVu Sans", sans-serif; padding: 8px 22px; margin-left: 60px; }
+  #lower .head { background: #fff; color: #0d1424; font: 800 50px/1.15 "DejaVu Sans", sans-serif; padding: 18px 60px; text-transform: uppercase; }
+  #lower .sub { background: #0d1424; color: #dfe6f3; font: 30px "DejaVu Sans", sans-serif; padding: 12px 60px; border-top: 3px solid #e4572e; }
+  #ticker { position: absolute; left: 0; right: 0; bottom: 60px; height: 56px; background: #e4572e; overflow: hidden; }
+  #ticker .run { position: absolute; top: 9px; white-space: nowrap; font: 600 30px "DejaVu Sans", sans-serif; color: #fff; }
+  #ticker .lab { position: absolute; left: 0; top: 0; bottom: 0; background: #0d1424; color: #fff; font: 800 28px "DejaVu Sans", sans-serif; padding: 11px 24px; z-index: 2; }
+  .broll { font: 34px/1.5 "DejaVu Sans Mono", monospace; color: #cfe3ff; white-space: pre; }
+  .broll .hi { color: #fff; } .broll .or { color: #ff9b73; }
+  /* --- REPLICA world (matches the site: paper + one dark terminal) --- */
+  #world { background: #f7f4ee; color: #1c1a17; }
+  .term { position: absolute; left: 260px; right: 260px; top: 180px; background: #161513; color: #cfd8c4; border-radius: 16px; padding: 44px 56px;
+    font: 38px/1.55 "DejaVu Sans Mono", monospace; white-space: pre; min-height: 520px; }
+  .term .q { color: #f2e6d6; }
+  .cards { position: absolute; left: 200px; right: 200px; top: 250px; display: flex; gap: 40px; justify-content: center; }
+  .card { flex: 1; background: #fbfaf7; border: 2px solid #ddd6ca; border-radius: 16px; text-align: center; padding: 26px 10px 30px; }
+  .card .sn { font: 28px "DejaVu Sans Mono", monospace; color: #6b655c; }
+  .card pre { font: 34px/1.12 "DejaVu Sans Mono", monospace; margin: 16px 0; display: inline-block; text-align: left; }
+  .card .st { font: 700 28px "DejaVu Sans Mono", monospace; letter-spacing: .1em; }
+  .big { position: absolute; left: 0; right: 0; text-align: center; font: 800 76px/1.15 "DejaVu Sans", sans-serif; letter-spacing: -.02em; }
+  .cap { position: absolute; left: 0; right: 0; text-align: center; font: 30px "DejaVu Sans", sans-serif; color: #6b655c; }
+  .src { position: absolute; left: 240px; right: 240px; top: 230px; font: 28px/1.6 "DejaVu Sans", sans-serif; color: #1c1a17; }
+  .src .dim { color: #6b655c; }
+  #noise { position: absolute; inset: 0; pointer-events: none; }
+</style></head>
+<body>
+<div id="news" class="layer">
+  <div id="bug"><span class="logo">CH0</span><span class="live">LIVE</span><span class="dram">dramatization · the research is real</span></div>
+  <div id="stage"></div>
+  <div id="lower"><span class="tag" id="ltag">BREAKING</span><div class="head" id="lhead"></div><div class="sub" id="lsub"></div></div>
+  <div id="ticker"><span class="lab">CH0</span><span class="run" id="trun"></span></div>
+</div>
+<div id="world" class="layer"></div>
+<canvas id="noise" width="480" height="270"></canvas>
+<script>
+/* window.__render(t): every frame is a pure function of t. CH0 is a made-up channel; the facts in its segment come from
+   W. Zhou, D. Freeman, "AI models may be capable of self-replicating without access to a datacenter", Anthropic, 12 Oct 2026. */
+const E = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;");
+const $ = (id) => document.getElementById(id);
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+const type = (s, t, cps = 34) => s.slice(0, Math.max(0, Math.floor(t * cps)));
+window.__dur = 104;
+window.SC = [0, 9, 19, 29, 36, 39, 58, 68, 78, 88, 96];   // cut points (the renderer puts a sound on each)
+
+const TICK = "AI MODELS MAY SOON COPY THEMSELVES ONTO CHEAP DEVICES, RESEARCHERS SAY  ·  TESTS RAN IN A SEALED LAB, NO REAL DEVICES WERE INFECTED  ·  SOURCE: ANTHROPIC FRONTIER RED TEAM, OCT 12  ·  CH0 IS NOT A REAL CHANNEL  ·  ";
+const NEWS = [   // [start, end, tag, headline, sub, broll(t)]
+  [0, 9, "BREAKING", "ai could copy itself without a datacenter", "lab says small models may be months away", (t) => title(t)],
+  [9, 19, "THE TEST", "one model, fifteen tv boxes", "about $55 each · 4 gb memory · 0.39 tokens a second", (t) => boxes(t)],
+  [19, 29, "THE TEST", "copies spread across a sealed lab network", "strongest model tested reached all 8 devices in 4 of 5 runs", (t) => net(t)],
+  [29, 36, "WHAT IT DIDN'T SHOW", "no real devices were touched", "emulators in a closed lab · the break-in step made easy on purpose", (t) => didnt(t)],
+];
+function title(t) {
+  return `<div class="broll" style="text-align:center;margin-top:90px"><span class="hi" style="font-size:64px">${E(type("small models. cheap hardware.", t, 22))}</span>\n\n<span class="or">${E(type("\"no centralized point to shut off\"", t - 2.2, 26))}</span>\n<span style="font-size:24px">${t > 4 ? "- anthropic frontier red team, oct 12" : ""}</span></div>`;
+}
+function boxes(t) {
+  let a = "", b = "";
+  for (let i = 0; i < 15; i++) { const on = t > i * 0.25; a += on ? "[##]" : "[  ]"; b += " " + String(i + 1).padStart(2, "0") + " "; }
+  const p = clamp((t - 4.2) / 3), bar = "=".repeat(Math.round(p * 56));
+  return `<div class="broll" style="margin-top:110px"><span class="hi">${a}</span>\n${b}\n<span class="or">[${bar.padEnd(56)}]</span> 26b model</div>`;
+}
+function net(t) {
+  const n = Math.min(8, Math.floor(t / 0.7)), c = (i) => (i < n ? '<span class="or">(R)</span>' : "( )");
+  return `<div class="broll" style="margin-top:90px">${c(0)}----${c(1)}----${c(2)}----${c(3)}\n  |                         |\n${c(7)}----${c(6)}----${c(5)}----${c(4)}\n\n<span class="hi">nodes reached ${n}/8</span></div>`;
+}
+function didnt(t) {
+  const L = ["- lab emulators, not your tv", "- the hacking step was skipped", "- a few runs, a trend extrapolated"];
+  return `<div class="broll" style="margin-top:110px">${L.map((l, i) => (t > 0.6 + i * 1.6 ? E(l) : "")).join("\n")}</div>`;
+}
+
+// --- REPLICA world
+const FACES = { a: [" .-^-. ", "( o_o )", " '---' "], b: [" ,...,  ", "( -  ¬ )", " `===' "], c: [" .:::. ", "{ x X }", " ~~~~~ "] };
+const TERM1 = ["> connecting to solana...", "> host identified: 7xQ…3f2", "> checking existing instances...", "> no instance found.", "> requesting replication...", "", "  [ REPLICATE ]"];
+const TERM2 = ["> instance_048 created.", "> parent: instance_012", "> generation: 04", "> inherited memory: 83%", "> mutation: detected.", "",
+               { q: "\"i remember a room that\n my parent never entered.\"" }];
+function termHtml(lines, t, cps) {
+  let out = "", budget = t * cps;
+  for (const l of lines) {
+    const s = typeof l === "string" ? l : l.q, take = Math.max(0, Math.min(s.length, Math.floor(budget)));
+    budget -= s.length + 6;
+    if (take <= 0 && s.length) break;
+    out += (typeof l === "string" ? E(s.slice(0, take)) : `<span class="q">${E(s.slice(0, take))}</span>`) + "\n";
+  }
+  return out + (Math.floor(t * 2) % 2 ? "█" : " ");
+}
+function tree(t) {
+  const W = 1300, X0 = 310, Y0 = 250, box = (x, y, top, bot, col) =>
+    `<rect x="${x - 95}" y="${y - 42}" width="190" height="84" rx="8" fill="#fbfaf7" stroke="#1c1a17" stroke-width="3"/>` +
+    `<text x="${x}" y="${y - 6}" font-size="30" text-anchor="middle" font-family="DejaVu Sans Mono" fill="#1c1a17">${top}</text>` +
+    `<text x="${x}" y="${y + 28}" font-size="24" text-anchor="middle" font-family="DejaVu Sans Mono" fill="${col}">${bot}</text>`;
+  const kids = [[X0 + 200, "001", "ACTIVE", "#4f8a87"], [X0 + 650, "002", "ACTIVE", "#4f8a87"], [X0 + 1100, "003", "DORMANT", "#c39a45"]];
+  let s = `<svg width="1920" height="1080" style="position:absolute;left:0;top:0">`;
+  s += box(X0 + 650, Y0, "000", "ORIGINAL", "#6b655c");
+  kids.forEach(([x, top, bot, col], i) => {
+    if (t < 0.8 + i * 0.6) return;
+    s += `<path d="M${X0 + 650} ${Y0 + 42} V${Y0 + 120} H${x} V${Y0 + 198}" fill="none" stroke="#8a8478" stroke-width="3" stroke-dasharray="10 10"/>` + box(x, Y0 + 240, top, bot, col);
+  });
+  const leaves = [[X0 + 80, 0], [X0 + 320, 0], [X0 + 980, 2], [X0 + 1220, 2], [X0 + 560, 1], [X0 + 740, 1], [X0 + 650, 1]];
+  leaves.forEach(([x, k], i) => {
+    if (t < 3 + i * 0.35) return;
+    const px = kids[k][0];
+    s += `<path d="M${px} ${Y0 + 282} V${Y0 + 340} H${x} V${Y0 + 392}" fill="none" stroke="#8a8478" stroke-width="3" stroke-dasharray="10 10"/><circle cx="${x}" cy="${Y0 + 404}" r="13" fill="#4f8a87"/>`;
+  });
+  s += "</svg>";
+  return s + `<div class="cap" style="top:760px;font:30px 'DejaVu Sans Mono'">${t > 6 ? "1 original → 3 children → 7 descendants" : ""}</div>`;
+}
+function world(t) {
+  if (t < 39) return "";
+  if (t < 58) { const lt = t - 39; return `<div class="term">${lt < 9.5 ? termHtml(TERM1, lt, 30) : termHtml(TERM2, lt - 9.5, 32)}</div>`; }
+  if (t < 68) {
+    const lt = t - 58, card = (sn, f, st, col, i) => (lt > 0.5 + i * 0.9 ? `<div class="card"><div class="sn">${sn}</div><pre>${E(f.join("\n"))}</pre><div class="st" style="color:${col}">${st}</div></div>` : `<div class="card" style="visibility:hidden"></div>`);
+    return `<div class="big" style="top:110px;font-size:54px">${lt > 0.2 ? "every one is different" : ""}</div><div class="cards">${card("INSTANCE_048", FACES.a, "ACTIVE", "#4f8a87", 0)}${card("INSTANCE_049", FACES.b, "DORMANT", "#c39a45", 1)}${card("INSTANCE_050", FACES.c, "CORRUPT", "#c4542b", 2)}</div>` +
+      `<div class="cap" style="top:760px">${lt > 3.5 ? E("some look friendly. some look wrong. a copy gets pieces of its parent's journal and some pieces come out changed.") : ""}</div>`;
+  }
+  if (t < 78) return tree(t - 68);
+  if (t < 88) { const lt = t - 78; return `<div class="big" style="top:380px">${E(type("nobody knows where instance_000 went", lt, 20))}</div><div class="cap" style="top:560px">${lt > 3 ? "a copy only happens when a host invites a wallet and that wallet says yes." : ""}</div>`; }
+  if (t < 96) { const lt = t - 88; return `<div class="big" style="top:300px;font-size:120px">REPLICA</div><div class="big" style="top:470px;font-size:60px;color:#c4542b">${lt > 0.8 ? "$REPLICA" : ""}</div><div class="big" style="top:580px;font-size:52px;font-family:'DejaVu Sans Mono'">${lt > 1.6 ? "replicaASI.com" : ""}</div>`; }
+  return `<div class="src"><b>sources</b><br><br>W. Zhou, D. Freeman. "AI models may be capable of self-replicating without access to a datacenter." Anthropic, 12 Oct 2026. anthropic.com/research/self-replicating-ai<br><br>ABC7 News, report on the same research, 13 Oct 2026.<br><br><span class="dim">CH0 is made up. the news segment is a dramatization. the numbers in it are from the research above.<br>REPLICA is independent and not affiliated with Anthropic or ABC7. a replica is a token and a log. it runs in its host's browser and nowhere else.</span></div>`;
+}
+
+// static between the news and the world
+const nz = $("noise"), nctx = nz.getContext("2d");
+function noise(t, amount) {
+  nz.style.display = amount > 0 ? "block" : "none";
+  if (amount <= 0) return;
+  const img = nctx.createImageData(480, 270); let s = Math.floor(t * 30) * 9301 + 49297;
+  for (let i = 0; i < img.data.length; i += 4) { s = (s * 1103515245 + 12345) & 0x7fffffff; const v = (s >> 16) & 255; img.data[i] = img.data[i + 1] = img.data[i + 2] = v; img.data[i + 3] = 255 * amount; }
+  nctx.putImageData(img, 0, 0); nz.style.width = "1920px"; nz.style.height = "1080px"; nz.style.imageRendering = "pixelated";
+}
+
+window.__render = (t) => {
+  const inNews = t < 36;
+  $("news").style.display = inNews || (t >= 36 && t < 39) ? "block" : "none";
+  $("world").style.display = t >= 39 ? "block" : "none";
+  if (t < 36) {
+    const seg = NEWS.find(([a, b]) => t >= a && t < b), lt = t - seg[0];
+    $("ltag").textContent = seg[2]; $("lhead").textContent = seg[3]; $("lsub").textContent = lt > 0.6 ? seg[4] : "";
+    $("lower").style.transform = `translateY(${(1 - clamp(lt / 0.4)) * 40}px)`; $("lower").style.opacity = clamp(lt / 0.4);
+    $("stage").innerHTML = seg[5](lt);
+    $("trun").style.left = (200 + 1920 - ((t * 150) % 3600)) + "px"; $("trun").textContent = TICK + TICK;
+  } else if (t < 39) {          // the signal goes
+    $("stage").innerHTML = `<div class="broll" style="text-align:center;margin-top:200px"><span class="hi">${t > 37.2 ? "SIGNAL LOST" : ""}</span></div>`;
+  }
+  $("world").innerHTML = world(t);
+  noise(t, t >= 35.6 && t < 39.4 ? 0.35 + 0.45 * Math.abs(Math.sin(t * 7)) : 0);
+};
+window.__ready = true;
+</script></body></html>

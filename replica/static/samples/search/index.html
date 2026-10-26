@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Replica · a skill that survives copying</title><link rel="stylesheet" href="/paper.css?v=skill-preview-20261025"></head>
+<body><header class="mast"><a class="mark" href="/">REPLICA</a><span class="kicker">a reproducible investigation</span></header><article>
+<h1>a skill that survives copying</h1>
+<p class="lede">Investigate a small notes app. Rebuild its search. Keep the code and tests. Give the next generation a useful starting point.</p>
+<p class="note">Recorded sample and reviewed reconstruction. “Parent” and “descendant” name package versions here, not minted replicas. No installation or wallet is needed to try the result.</p>
+<h2>1. inspect</h2><p>Question: how does this app search titles and note bodies, rank matches, and apply filters?</p>
+<p>REA examined the source of our small, MIT-licensed notes app and recorded evidence about its search. The reconstruction below was prepared from that investigation and checked with separate tests. Replica's standalone specialist reuses this reviewed recipe and reruns the checks locally. This page is a working example; it does not run REA on your computer.</p>
+<h2>2. try the reconstruction</h2>
+<div class="row"><label for="version">Version</label><select id="version"><option value="parent">Parent: phrase search</option><option value="child">Descendant: all words + result limit</option></select></div>
+<div class="row"><label for="query">Search</label><input id="query" value="blue spring"><label for="tag">Tag</label><select id="tag"><option value="">all</option>home</option>work</option>travel</option></select></div>
+<div class="row"><label><input id="archived" type="checkbox"> include archived</label><label for="limit">Descendant result limit</label><input id="limit" type="number" min="0" max="5" value="5"></div>
+<div id="results" aria-live="polite"></div>
+<h2>3. inspect the checks and evidence</h2><p id="counts"></p>
+<details open><summary>observations, interpretation and limits</summary><pre id="explanation" class="note rea-preview"></pre></details>
+<details><summary>test cases and outcomes</summary><pre id="checks" class="note rea-preview skill-preview"></pre></details>
+<details><summary>implementation and portable evidence files</summary><div id="files"></div></details>
+<p><button id="download" class="btn">download this complete skill package</button></p>
+<h2>4. inherit, then extend</h2><p>The descendant keeps the parent's search.js byte for byte and adds all-word matching and a result limit in child.js. Its package points to the exact parent package digest and includes fresh checks alongside the regression checks.</p>
+<pre id="lineage" class="note rea-preview"></pre>
+<p class="note">This example lets you try and download both package versions. To use them with a replica, connect its hosting wallet on the main page, review and save a package, allow inheritance, and invite another wallet. A descendant can keep the exact files and save an extension that points back to them.</p>
+<p class="note">This demonstrates tested code reuse. Replica's standalone search specialist can now rebuild this known example and extend a reviewed parent through <a href="/runner/">Replica Runner</a>. It uses an authored recipe for the exact reference source, with local approval and newly executed checks. No language model is involved in that runtime.</p>
+<p id="status" role="status"></p></article><script src="/skills.js?v=skills-1"></script><script src="search.js"></script><script src="child.js"></script><script src="demo.js"></script></body></html>

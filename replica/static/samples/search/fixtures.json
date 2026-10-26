@@ -1,0 +1,7 @@
+[
+  {"id":"a","title":"Garden plans","body":"Plant blue flowers in spring","tags":["home"],"archived":false},
+  {"id":"b","title":"Blue notebook","body":"Garden reminders for spring","tags":["home","work"],"archived":false},
+  {"id":"c","title":"Work notes","body":"Blue garden sketches","tags":["work"],"archived":false},
+  {"id":"d","title":"Archived garden","body":"Old blue plans","tags":["home"],"archived":true},
+  {"id":"e","title":"Travel","body":"Train times","tags":["travel"],"archived":false}
+]

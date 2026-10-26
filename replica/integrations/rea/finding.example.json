@@ -1,0 +1,12 @@
+{
+  "schema": "replica-rea-finding-v1",
+  "cue": "What did the example investigation establish?",
+  "answer": "This is a format example only. Replace it with a supported finding before importing.",
+  "source": {
+    "version": "6.8.0",
+    "tool": "replace_with_actual_tool_name",
+    "target": "Replace with a public-safe target identifier",
+    "evidence": "Replace with specific observations and an evidence reference from the REA result.",
+    "limitations": "Example only; no real investigation was performed."
+  }
+}

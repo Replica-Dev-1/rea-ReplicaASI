@@ -1,0 +1,123 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>REPLICA terminal</title>
+<style>
+  html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; background: #050505; }
+  #win { position: absolute; left: 110px; top: 70px; width: 1700px; height: 940px; background: #0b0c0b; border: 1px solid #2a2a2a;
+         box-shadow: 0 0 80px rgba(0,0,0,.8); }
+  #bar { height: 44px; border-bottom: 1px solid #222; display: flex; align-items: center; padding: 0 18px; gap: 10px;
+         font: 22px "Courier New", Courier, monospace; color: #8a8a8a; }
+  .dot { width: 14px; height: 14px; border-radius: 50%; background: #3a3a3a; }
+  #bar span { margin-left: 18px; }
+  #t { position: absolute; left: 34px; right: 34px; top: 66px; bottom: 26px; overflow: hidden; margin: 0;
+       font: 29px/1.32 "Courier New", Courier, "DejaVu Sans Mono", monospace; color: #d4d4d4; white-space: pre; }
+  .p { color: #7bd88f; } .d { color: #6a6a6a; } .r { color: #ff3b3b; } .w { color: #ffffff; } .y { color: #d8b45a; } .c { color: #9a9a9a; }
+  .cur { background: #d4d4d4; color: #0b0c0b; }
+  #end { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #050505;
+         font-family: "Courier New", Courier, monospace; color: #e8e8e8; opacity: 0; }
+  #end .xl { font-size: 150px; font-weight: bold; letter-spacing: .08em; }
+  #end .sm { font-size: 34px; color: #9a9a9a; margin-top: 30px; }
+</style></head>
+<body><div id="win"><div id="bar"><i class="dot"></i><i class="dot"></i><i class="dot"></i><span>host@replica: ~</span></div><pre id="t"></pre></div>
+<div id="end"><div class="xl">REPLICA</div><div class="sm">replicaASI.com</div></div>
+<script>
+/* REPLICA terminal film. A terminal runs replica commands; the figures come out in the output, drawn the way the site
+   draws them. window.__render(t) is a pure function of t; window.CUES drives the sound bed (render_trailer.py). */
+const E = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;");
+const $ = (id) => document.getElementById(id);
+const FIG = {
+  one: ["|         |", "|  O   O  |", "|  > ^ <  |", "|         |", "|   ___   |", "|   |o|   |", "|   | |   |", "|   '-'   |", "|___Repeat|"],
+  two: ["|         |", "|   x  @  |", "|  ) ~ (  |", "|         |", "|   ===   |", "|   [ ]   |", "|   [ ]   |", "|   ===   |", "|_____Echo|"],
+  zero: ["|         |", "|  ?   ?  |", "|  ) ~ (  |", "|         |", "|   ___   |", "|   |?|   |", "|   |     |", "|   '-'   |", "|_________|"],
+};
+// the script: ["cmd", text] is typed; ["out", text, cls, gap] prints a line; ["fig", key, cls] prints a figure; ["wait", s]
+const S = [
+  ["wait", 0.8],
+  ["cmd", "replica status"],
+  ["out", "connecting to solana .............. ok", "", 0.35],
+  ["out", "searching for instance_000 ........ ", "", 0.5], ["app", "not found", "r", 0.9],
+  ["out", "last seen: copying itself.", "c", 0.4],
+  ["wait", 0.9],
+  ["cmd", "replica wake --host 7xKp…9fQe"],
+  ["out", "checking the coin in this wallet .. ok", "", 0.5],
+  ["out", "minting core asset ................ ", "", 0.4], ["app", "confirmed", "p", 1.2, "boom"],
+  ["out", "", "", 0.1],
+  ["out", "instance_001 created.", "w", 0.25],
+  ["out", "parent: instance_000", "", 0.2],
+  ["out", "generation: 01", "", 0.3],
+  ["fig", "one", "w"],
+  ["out", "\"the lights hum at a frequency i can count.\"", "y", 1.2],
+  ["wait", 0.6],
+  ["cmd", "replica teach instance_001 \"where did the original go?\" \"nobody knows\""],
+  ["out", "signing log entry 0003 ............ ok", "", 0.45],
+  ["out", "stored. its copies will get it.", "c", 1.0],
+  ["wait", 0.5],
+  ["cmd", "replica copy instance_001 --to 4Fh2…Lk8m"],
+  ["out", "invite made. one wallet. expires in 7 days.", "", 0.5],
+  ["out", "waiting for that wallet to say yes", "c", 0.45, "beat"], ["app", " .", "d", 0.8], ["app", " .", "d", 0.8], ["app", " .", "d", 0.8],
+  ["out", "accepted.", "p", 0.6],
+  ["out", "", "", 0.1],
+  ["out", "instance_002 created. parent: instance_001. generation 02", "w", 0.35, "boom"],
+  ["out", "inherited memory: 83%", "", 0.35],
+  ["out", "mutation detected.", "r", 0.6, "glitch"],
+  ["fig", "two", "w"],
+  ["out", "journal:", "c", 0.3],
+  ["out", "  \"i remember a room that my parent never entered.\"", "y", 1.3],
+  ["wait", 0.4],
+  ["cmd", "replica tree"],
+  ["out", "instance_000  ORIGINAL   ?", "c", 0.18],
+  ["out", "└─ instance_001  ACTIVE   gen 01", "p", 0.18],
+  ["out", "   ├─ instance_002  ACTIVE   gen 02", "p", 0.18],
+  ["out", "   └─ instance_003  CORRUPT  gen 02", "r", 1.0, "glitch"],
+  ["wait", 0.4],
+  ["cmd", "replica find instance_000", "rise"],
+  ["out", "searching .........................", "d", 1.0],
+  ["fig", "zero", "c"],
+  ["out", "not found.", "r", 1.6],
+  ["end", 4.0],
+];
+
+// lay the script out on a clock once; render(t) just reads it
+const EV = []; let T = 0; const CUES = { braam: [], beat: [], glitch: [], riser: [0, 0], cut: [], hum: [0, 0], key: [], line: [] };
+const PROMPT = "host@replica:~$ ";
+for (const s of S) {
+  const k = s[0];
+  if (k === "wait") { T += s[1]; continue; }
+  if (k === "cmd") {
+    const dur = s[1].length / 26;
+    for (let i = 0; i < s[1].length; i++) CUES.key.push(+(T + i / 26).toFixed(3));
+    EV.push({ t: T, k: "cmd", text: s[1], dur }); T += dur + 0.35; continue;
+  }
+  if (k === "out" || k === "app") {
+    EV.push({ t: T, k, text: s[1], cls: s[2] });
+    CUES.line.push(+T.toFixed(3));
+    T += s[3]; continue;
+  }
+  if (k === "fig") { for (const row of FIG[s[1]]) { EV.push({ t: T, k: "out", text: row, cls: s[2] }); T += 0.06; } T += 0.4; continue; }
+  if (k === "end") { CUES.cut.push(+T.toFixed(2)); EV.push({ t: T, k: "end" }); T += s[1]; }
+}
+CUES.hum = [0, Math.ceil(T)];
+window.CUES = CUES;
+window.__dur = Math.ceil(T);
+
+const ROWS = 22;
+window.__render = (t) => {
+  const lines = []; let typing = false, endAt = null;
+  for (const e of EV) {
+    if (e.t > t) break;
+    if (e.k === "end") { endAt = e.t; continue; }
+    if (e.k === "cmd") {
+      const n = Math.min(e.text.length, Math.floor((t - e.t) * 26));
+      typing = n < e.text.length;
+      lines.push(`<span class="p">${E(PROMPT)}</span>${E(e.text.slice(0, n))}`);
+    } else if (e.k === "out") lines.push(`<span class="${e.cls}">${E(e.text)}</span>`);
+    else lines[lines.length - 1] += `<span class="${e.cls}">${E(e.text)}</span>`;
+  }
+  const blink = typing || Math.floor(t * 1.8) % 2 === 0;
+  const last = EV.filter((e) => e.t <= t && e.k !== "end").pop();
+  if (!typing && last && last.k !== "cmd") lines.push(`<span class="p">${E(PROMPT)}</span>`);
+  if (lines.length) lines[lines.length - 1] += blink ? '<span class="cur"> </span>' : " ";
+  $("t").innerHTML = lines.slice(-ROWS).join("\n");
+  $("end").style.opacity = endAt === null ? 0 : Math.min(1, (t - endAt) / 0.4);
+};
+window.__ready = true;
+</script></body></html>

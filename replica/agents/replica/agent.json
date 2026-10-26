@@ -1,0 +1,7 @@
+{
+  "schema": "replica-agent-profile-v1",
+  "name": "Replica software specialist",
+  "core": "never",
+  "language_model": false,
+  "specialists": ["source-evidence", "numeric-helper", "notes-search", "notes-search-extension"]
+}

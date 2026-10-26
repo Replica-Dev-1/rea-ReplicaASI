@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Replica · connect REA</title><link rel="stylesheet" href="/paper.css?v=runner-1"></head>
+<body><header class="mast"><a class="mark" href="/">REPLICA</a><span class="kicker">give it something to investigate</span></header>
+<article>
+<p><strong>REA also runs directly on the <a href="/#investigations">main site</a>.</strong> connect your hosting wallet, choose a sample or upload a source file under “investigate with REA”, and choose “run REA”. no installation is needed for website inspection. this guide covers the optional local runner and its build specialists.</p>
+<h1>your replica, working locally</h1>
+<p>choose a source file. your replica uses REA to inspect it, then checks whether one of its own specialists can build a useful result. the agents run locally, without a language model or an upstream agent connection.</p>
+<p><a href="replica-runner.zip">download Replica Runner</a> · <a href="guide.txt">read the complete setup and data-handling guide</a></p>
+<h2>1. install the tools</h2>
+<p>extract the download into a new folder. you need Python 3.10+ and a supported Node.js version; Node 24.22.1 was tested. open a terminal in that folder:</p>
+<pre class="rea-preview">npm install --ignore-scripts --prefix integrations/rea
+python tools/replica_runner.py doctor</pre>
+<p class="note">this installs REA 6.8.0 locally. it does not inspect your files or connect a wallet.</p>
+<h2>2. pair with your replica</h2>
+<p>on the <a href="/#host">main page</a>, connect the wallet hosting your replica. open “investigate with REA”, then “connect your computer”. create a pairing code and run:</p>
+<pre class="rea-preview">python tools/replica_runner.py pair --site https://replicaasi.com --name "my computer"</pre>
+<p>paste the code into the terminal when asked. it works once and expires in ten minutes. keep it private.</p>
+<h2>3. choose one file</h2>
+<p>start with the included notes example, or replace its path with a JavaScript or TypeScript source file you own or have permission to inspect:</p>
+<pre class="rea-preview">python tools/replica_runner.py serve --source "samples/notes-target/search.cjs" --label "notes example"</pre>
+<p>leave the terminal open. the site shows the selected file. ask “Build the notes search.” there and start the investigation.
+  read the request in your terminal and type <code>inspect</code> to approve. REA reads an isolated copy of that one file; it does not run the inspected program.</p>
+<h2>4. let a specialist build and check</h2>
+<p>the agent checks the source and evidence against its capabilities. if a specialist covers the task, read its scope and type <code>build</code>. it assembles the supported implementation and runs its checks in a separate local folder. unsupported tasks are declined.</p>
+<p>the first specialists cover simple arithmetic helpers and the included notes-search example. the search specialist uses an authored recipe for that exact source; it is not a general app builder. <a href="guide.txt">read the supported forms and limits</a>.</p>
+<h2>5. review, save and pass it on</h2>
+<p>open the package path printed in your terminal. read its source, implementation, tests and evidence before typing <code>send</code>. every included file goes to your private review area. without a build package, only the displayed inspection summary and file identity are sent.</p>
+<p>on the site, review the result again and choose whether to save it publicly and allow inheritance. a descendant receives the exact approved package. its owner can select that downloaded parent with <code>--parent</code>, then ask “Extend the notes search with all words and a limit.” the new package links back to its parent.</p>
+<p><a href="/samples/search/">see the tested search example and its descendant</a>.</p>
+<h2>give each agent a scope</h2>
+<p>the local agent profile lets you choose a name and enable a subset of the admitted specialists. each run records the profile and the replica's own identity. profiles cannot enable a language model, remote fallback or arbitrary commands.</p>
+<h2>what stays private</h2>
+<p>the automatic inspection summary excludes source text and absolute local paths. the question, chosen label, filename and summary are stored on the relay for private review. they are not end-to-end encrypted. original evidence stays local unless you deliberately include it in a later package.</p>
+<p>source and evidence are not sent to a model provider. sending a build package shares its included files with Replica's private relay. publishing that package makes every included file public.</p>
+<p>you can disconnect the runner from the site. a new wallet owner cannot use your computer connection or read your private jobs. no wallet secret key is given to the runner.</p>
+<footer><p><a href="/">back to your replica</a> · <a href="https://github.com/morluto/rea" rel="noopener">REA source</a></p></footer>
+</article></body></html>

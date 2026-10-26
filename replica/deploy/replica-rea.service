@@ -1,0 +1,43 @@
+[Unit]
+Description=Replica hosted REA inspection worker
+After=replica.service
+
+[Service]
+User=replica-rea
+Group=replica-rea
+WorkingDirectory=/opt/replica/tools
+ExecStart=/usr/bin/python3 /opt/replica/tools/hosted_rea_worker.py --spool /var/lib/replica-rea --node /opt/replica-rea-worker/node/bin/node --rea /opt/replica-rea-worker/integrations/rea/node_modules/rea-agents/scripts/rea.mjs
+Environment=PYTHONDONTWRITEBYTECODE=1
+Restart=on-failure
+RestartSec=3
+StateDirectory=replica-rea
+StateDirectoryMode=2770
+TemporaryFileSystem=/opt:ro /var/lib:ro /srv:ro /var/www:ro /mnt:ro /media:ro
+BindReadOnlyPaths=/opt/replica /opt/replica-rea-worker
+BindPaths=/var/lib/replica-rea
+InaccessiblePaths=-/root -/home -/etc/replica.env -/etc/letsencrypt -/etc/nginx -/etc/systemd -/var/log -/var/backups -/var/spool -/var/mail
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+PrivateDevices=true
+PrivateIPC=true
+PrivateNetwork=true
+RestrictAddressFamilies=AF_UNIX
+NoNewPrivileges=true
+CapabilityBoundingSet=
+ProtectProc=invisible
+ProcSubset=pid
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictNamespaces=true
+RestrictSUIDSGID=true
+LockPersonality=true
+MemoryMax=768M
+CPUQuota=50%
+TasksMax=64
+LimitNOFILE=1024
+UMask=0007
+
+[Install]
+WantedBy=multi-user.target

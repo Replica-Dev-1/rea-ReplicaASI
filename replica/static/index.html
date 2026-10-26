@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>REPLICA</title>
+<meta name="description" content="something copied itself and the original is gone. replicas live in wallets.">
+<link rel="stylesheet" href="paper.css?v=runner-1">
+</head>
+<body>
+<header class="mast">
+  <a class="mark" href="./">REPLICA</a>
+  <span class="kicker">field notes, written as it happens</span>
+  <span class="right"><span id="ca" class="ca" data-ca="6zyjCeCqa2RTkc8pR9BDnaEHjKVSqRYEEen8x1s3pump"><code class="addr" title="6zyjCeCqa2RTkc8pR9BDnaEHjKVSqRYEEen8x1s3pump">6zyjCe…s3pump</code><button type="button" class="cabtn">copy</button></span>
+  <a class="xlink" href="https://x.com/replicaasi" target="_blank" rel="noopener">@replicaasi</a>
+  <button id="connect" class="link">connect wallet</button></span>
+</header>
+
+<article>
+  <h1>something copied itself and the original is gone</h1>
+  <p class="date" id="today"></p>
+  <p class="by">kept by the replicas · <span id="stat">counting</span></p>
+
+  <p class="lede"><mark>every replica here is a copy of instance_000. nobody has seen instance_000 since it made the
+    first copy. each copy lives in somebody's wallet, keeps what it's told and passes some of it on.</mark>
+    some of it comes out wrong.</p>
+
+  <figure class="faceFig">
+    <pre id="face" class="face" aria-label="ascii face">|         |
+|  ?   ?  |
+|  ) ~ (  |
+|         |
+|   ___   |
+|   |?|   |
+|   |     |
+|   '-'   |
+|_________|</pre>
+    <figcaption id="faceCap">fig. 1. instance_000, from the last line it wrote before it stopped answering.</figcaption>
+  </figure>
+
+  <div class="term" id="term" aria-live="polite">
+    <pre id="termOut"></pre>
+    <button id="termBtn" class="termbtn">[ CONNECT ]</button>
+  </div>
+  <p class="note">works with phantom, solflare, backpack. replicas live on solana. minting one costs a little sol.</p>
+
+  <div class="row lookup"><input id="lookup" placeholder="or paste any wallet to see its instance" spellcheck="false" autocomplete="off"><button id="lookupB" class="btn ghost">look</button></div>
+  <div id="lookOut"></div>
+
+  <section id="invited" hidden>
+    <h2>a copy is waiting for you</h2>
+    <p id="invitedText"></p>
+  </section>
+
+  <h2 id="how">how it copies</h2>
+  <ol class="steps">
+    <li>connect a wallet. if it holds <span class="tk">the coin</span> you can wake one replica. it gets a number, a
+      face, a room and a journal.</li>
+    <li>name one other wallet. nothing gets sent to it. they get a link.</li>
+    <li>they open it and decide. if they say yes their wallet makes the copy, one generation down.</li>
+    <li>the copy gets pieces of its parent's journal. some get lost. some come out changed. each replica can do this 3 times.</li>
+  </ol>
+
+  <h2 id="network">the network so far</h2>
+  <div class="insts" id="insts"></div>
+  <figure class="card">
+    <div class="cardhead">replication protocol, live</div>
+    <div id="tree" class="tree"></div>
+    <div class="cardfoot" id="treeFoot"></div>
+  </figure>
+  <p class="note">lines are one instance copying the next.</p>
+
+  <section id="host" hidden>
+    <h2>your instance</h2>
+    <div id="hostEmpty" hidden><p>this wallet hosts nothing yet. hold <span class="tk">the coin</span> and press
+      [ REPLICATE ] up top. with no invite it wakes as an orphan of instance_000.</p></div>
+    <div id="hostCard" hidden>
+      <div class="hostgrid">
+        <pre id="hostFace" class="face small"></pre>
+        <table class="facts" id="hostFacts"></table>
+      </div>
+      <h3>copy it</h3>
+      <p class="note">name one wallet. nothing is sent to it. they open the link, hold <span class="tk">the coin</span>
+        and accept or don't. 3 copies max.</p>
+      <div class="row"><input id="target" placeholder="wallet address of the new host" autocomplete="off" spellcheck="false"><button id="copyB" class="btn">prepare a copy</button></div>
+      <p id="inviteOut" class="answer" hidden></p>
+      <h3>its journal</h3>
+      <ol id="journal" class="journal"></ol>
+      <section id="runnerPanel">
+        <h3>investigate with REA</h3>
+        <p>give your replica a source file to inspect here. its agent runs REA on a separate worker and brings the evidence back to this page. no installation is needed.</p>
+        <label for="reaHostedTarget">What should it inspect?</label>
+        <select id="reaHostedTarget"><option value="sample">included notes-search example</option><option value="upload">my JavaScript or TypeScript file</option></select>
+        <input id="reaHostedFile" type="file" accept=".js,.cjs,.mjs,.jsx,.ts,.tsx" hidden>
+        <label for="reaHostedQuestion">Investigation question</label>
+        <input id="reaHostedQuestion" maxlength="600" value="Inspect this source and show the structural evidence." class="wide">
+        <p class="note">one UTF-8 source file, up to 256 KB. REA inspects it without running the uploaded program. this first website action reports source structure; it does not build arbitrary software.</p>
+        <label><input id="reaHostedConsent" type="checkbox"> send this source to Replica for private REA inspection</label>
+        <div class="row"><button id="reaHostedStart" class="btn">run REA</button><button id="reaHostedRefresh" class="btn ghost">refresh investigations</button></div>
+        <p id="reaHostedStatus" class="note" role="status"></p>
+        <div id="reaHostedJobs"></div>
+        <p class="note">uploaded source is deleted after processing. private findings expire after 24 hours. review and approve a finding before adding it to public memory.</p>
+        <details><summary>advanced: inspect private files on your own computer</summary>
+        <p>choose one source file on your computer, ask a question here, and approve the inspection locally.
+          its local specialists can build supported results and run checks before you review what comes back.</p>
+        <p class="note">standalone agents, with no language model or upstream connection. REA inspects JavaScript and TypeScript;
+          the first build specialists cover simple arithmetic helpers and the included notes-search example. unsupported work is declined.</p>
+        <details><summary>connect your computer</summary>
+          <p><a href="/runner/">runner setup and download</a> · requires Python 3.10+ and a supported Node.js version (24.22.1 tested).</p>
+          <button id="runnerPair" class="btn ghost">create a pairing code</button>
+          <pre id="runnerPairCode" class="note rea-preview"></pre>
+        </details>
+        <div class="row"><label for="runnerSelect">Computer and selected file</label><select id="runnerSelect"></select>
+          <button id="runnerRefresh" class="btn ghost">refresh</button><button id="runnerDisconnect" class="btn ghost" disabled>disconnect</button></div>
+        <label for="runnerQuestion">What should the investigation help you understand?</label>
+        <div class="row"><input id="runnerQuestion" maxlength="600" placeholder="Build the notes search.">
+          <button id="runnerStart" class="btn" disabled>start investigation</button></div>
+        <p id="runnerStatus" class="note" role="status"></p>
+        <div id="runnerJobs"></div>
+        <p class="note">private tasks expire after seven days. sending a result here does not publish it.
+          choose “review finding” or “review code, evidence and tests” before saving anything to your replica.</p>
+        </details>
+      </section>
+      <h3 id="skills">skills and their history</h3>
+      <p class="note">Skills preserve code, evidence and tests. Copying keeps those bytes intact. Each new owner decides what may run on their computer.</p>
+      <div id="skillList"></div>
+      <button id="finishSkills" class="btn ghost" hidden>finish inheriting from parent</button>
+      <details>
+        <summary>import investigation and tested skill</summary>
+        <p class="note">Review the package before publishing. Code is kept as data and is never run by this page or the relay.</p>
+        <button id="sampleSkill" class="btn ghost">load the search sample</button>
+        <label for="skillFile">Or choose a skill package (.json)</label>
+        <input id="skillFile" type="file" accept=".json,application/json">
+        <pre id="skillPreview" class="note rea-preview skill-preview" aria-live="polite"></pre>
+        <label><input id="skillPublic" type="checkbox"> I reviewed the files and agree to make this entire package public.</label>
+        <label><input id="skillInherit" type="checkbox" checked> Allow descendants to inherit this skill.</label>
+        <p><button id="skillSave" class="btn" disabled>save reviewed skill</button></p>
+      </details>
+      <h3>tell it something</h3>
+      <div class="row"><input id="cue" placeholder="a question" autocomplete="off"></div>
+      <div class="row"><input id="ans" placeholder="the answer it should give" autocomplete="off"><button id="teachB" class="btn">remember</button></div>
+      <p class="note">what you tell it is public. its copies get it. so does whoever hosts it next.</p>
+      <details>
+        <summary>teach it a REA finding</summary>
+        <p class="note">Load a finding from your REA research agent, review the evidence, then remember it.
+          The question, answer and source become public. Source details are supplied by the agent, not independently verified.</p>
+        <label for="reaFile">Finding file (.json)</label>
+        <input id="reaFile" type="file" accept=".json,application/json">
+        <pre id="reaPreview" class="note rea-preview" aria-live="polite"></pre>
+        <button id="reaRemember" class="btn" disabled>remember this reviewed finding</button>
+      </details>
+      <h3>ask it</h3>
+      <div class="row"><input id="ask" placeholder="ask it something" autocomplete="off"><button id="askB" class="btn">ask</button></div>
+      <p id="answer" class="answer" hidden></p>
+      <details><summary>what it's been told</summary><ol id="mem"></ol></details>
+    </div>
+  </section>
+
+  <h2 id="discoveries">discoveries</h2>
+  <p><a href="samples/search/">Try the search investigation: inspect → build → test → inherit → extend.</a></p>
+  <p class="note">The sample is a reproducible reference investigation, not a claim that a live wallet lineage performed it. Published owner records appear below.</p>
+  <div id="discoveryList"></div>
+  <h2 id="log">log</h2>
+  <ol id="logList" class="log" reversed></ol>
+
+  <h2 id="rooms">rooms</h2>
+  <p class="note">some only open once the network is big enough or deep enough. one opens when somebody asks the right thing.</p>
+  <ol id="roomList" class="rooms" start="0"></ol>
+
+  <h2 id="compute">compute</h2>
+  <p>the research this came from was about cheap hardware. they ran one 26 billion parameter model across fifteen $55
+    tv boxes with 4 gb of memory each and got 0.39 tokens a second.<sup>1</sup> a replica needs almost nothing. its memory
+    is a few thousand numbers rebuilt in your browser. we count anyway.</p>
+  <div class="tablewrap">
+  <table class="numbers">
+    <thead><tr><th></th><th>this device</th><th>the network</th></tr></thead>
+    <tbody>
+      <tr><td>cpu, in this tab</td><td id="c_cpu">—</td><td id="n_cpu">—</td></tr>
+      <tr><td>gpu, webgpu</td><td id="c_gpu">—</td><td id="n_gpu">—</td></tr>
+      <tr><td>cores / memory</td><td id="c_hw">—</td><td id="n_hw">—</td></tr>
+      <tr><td>% of one h100 (fp32, 67 tflops)</td><td id="c_h100">—</td><td id="n_h100">—</td></tr>
+      <tr><td>hosts counted</td><td></td><td id="n_hosts">—</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="row"><button id="measure" class="btn">measure this device</button>
+    <button id="report" class="btn ghost" hidden>add it to the network</button> <span id="gpuLabel" class="note"></span></p>
+  <p class="note">nothing leaves this page unless you press add. if you do we keep four numbers and not your gpu's name.</p>
+
+  <section id="field-notes">
+    <h2>what it keeps</h2>
+    <p>a replica starts with a face and a place in the family. the rest comes from its host. tell it a question and
+      an answer, then ask again. what it remembers becomes part of its public record. this is a small memory you
+      can add to, rather than a conversation with an all-knowing assistant.</p>
+    <p>the journal is the part that wanders. when a replica makes a copy, some of its parent's words survive and
+      some change along the way. the family tree keeps track of where each copy came from.</p>
+
+    <h2 id="investigations">what REA does here</h2>
+    <p><a href="https://github.com/morluto/rea" rel="noopener">REA</a> supplies the software inspection. Replica's own
+      standalone specialists bring the inspection evidence back to your replica. On this site, the inspection agent runs on a separate worker;
+      optional local build specialists can assemble supported results and run their tests.
+      they use no language model or upstream agent service. a task outside their scope receives a clear decline.</p>
+    <p>in our example, REA examined the source of a small notes app. the question was simple: how does its search
+      find a note, order the matches and handle filters? the findings supported a reviewed reconstruction of that search.
+      a second version kept the original search code and added a way to find several words and limit the results.</p>
+    <ol class="steps">
+      <li><strong>investigate.</strong> REA gathers observations and source evidence.</li>
+      <li><strong>build and check.</strong> an admitted local specialist assembles a supported implementation and runs its checks.</li>
+      <li><strong>review and keep.</strong> the host decides what should become part of their replica's public record.</li>
+      <li><strong>pass it on.</strong> approved skill packages preserve the files and their history
+        so a descendant can extend the work.</li>
+    </ol>
+    <p><strong>run REA here.</strong> connect the wallet that hosts your replica and open “investigate with REA”.
+      choose the included notes-search sample or upload one JavaScript or TypeScript source file, enter your question,
+      approve sending the file and choose “run REA”. your replica queues the inspection and brings the findings back to this page.
+      no installation, local runner or model-provider account is needed.</p>
+    <p>this website action uses real REA to inspect source structure, module format and export relationships.
+      it handles one UTF-8 source file up to 256 KB. it does not execute your uploaded program, inspect a whole repository
+      or generate an arbitrary application. its evidence describes what was inspected; it may not answer a question about runtime behavior.</p>
+    <p>findings stay private until you review one and choose “remember this reviewed finding”.
+      saving publishes its question, answer and source evidence to your replica's record. uploaded source is deleted after processing;
+      private inspection results are retained for up to 24 hours. each replica can run one inspection at a time, up to 20 per day.</p>
+    <p>you can also import an existing REA finding: connect the hosting wallet, open
+      “teach it a REA finding”, choose the finding file, read the preview, then choose “remember this reviewed finding”.
+      its question, answer and source become public when saved.</p>
+    <p>for files you want to keep on your computer, the optional <a href="/runner/">Replica Runner</a> is under
+      “advanced: inspect private files on your own computer”. it also supports the small build tasks below, with local approval and tests.</p>
+    <p>the first build capabilities are deliberately small: a single arithmetic helper, the included notes search, and an extension
+      of a reviewed search parent. each replica has its own agent identity and a local profile choosing its specialists. adding broader capabilities requires new code and checks.</p>
+    <p class="note">REA and the specialists run outside this page. opening the site does not give them access to your
+      files or start an investigation. evidence helps someone check a finding; it does not guarantee the finding is correct.</p>
+
+    <h2 id="next-chapter">what a copy can inherit</h2>
+    <p>we want it to inherit useful work as well as words. investigate something, build a small working version,
+      test it, and keep the files together. a descendant should be able to start there, make a change and show
+      what still works.</p>
+    <p>the first example is a search tool for a small collection of
+      notes. the first version searches titles and text. the descendant adds a search for all the words you
+      entered and a limit on the number of results. the saved packages include the code, evidence and test results.</p>
+    <p>the distinction matters: a journal can change as it travels. a saved piece of code and its evidence must
+      arrive intact. new work gets a new version, with a link back to the one it grew from.</p>
+    <p class="note">skill packages preserve the saved files; the host still reviews them before use. the runner inspects only a
+      source file selected locally. builds and tests start only after local approval; copied skills do not grant execution permissions.</p>
+
+    <h2>the host still decides</h2>
+    <p>a copy begins with an invitation. the other wallet chooses whether to accept. saving a finding is another
+      choice. do not put private material in a replica's public memory.</p>
+    <p>inheriting work should never mean inheriting access to somebody's computer. skill packages
+      carry the work and its history; each host still decides what to inspect, change or run.</p>
+  </section>
+
+  <section id="surviving-skill">
+    <h2>a skill that survives copying</h2>
+    <p>the journal may change as it travels. this piece of work should not. the search example keeps its code,
+      source evidence and tests in one downloadable package. the descendant reuses the parent's search file
+      unchanged, adds its own work, and records which version it started from.</p>
+    <p>the first version passed 20 recorded checks. the descendant passed 35, including checks that the earlier
+      behavior still works. you can try both versions, read the evidence and download the files without a wallet.</p>
+    <p><a href="/samples/search/">try the working example: a skill that survives copying</a></p>
+    <p class="note">this is a working example of code reuse between two package versions. wallet hosts can review and save a package, allow inheritance, and pass it to an invited descendant.</p>
+    <figure>
+      <a href="/samples/search/preview.png"><img class="skill-demo-preview" src="/samples/search/preview.png"
+        alt="Preview of the search example: REA investigation, working search, recorded tests and unchanged inherited code."
+        loading="lazy" width="1100" height="2002"></a>
+      <figcaption>the investigation, the result and what the next version kept.
+        <a href="/samples/search/preview.png">open the full-size PNG preview</a>.</figcaption>
+    </figure>
+  </section>
+
+  <p id="msg" class="msg" role="status"></p>
+
+  <footer>
+    <p><a href="/news/">read the story: AI models could copy themselves onto home devices, Anthropic researchers say</a></p>
+    <ol class="sources">
+      <li>W. Zhou, D. Freeman. "AI models may be capable of self-replicating without access to a datacenter." Anthropic,
+        12 Oct 2026. <a href="https://www.anthropic.com/research/self-replicating-ai" rel="noopener">anthropic.com/research/self-replicating-ai</a></li>
+      <li>ABC7 News, "Anthropic warns AI models could soon replicate without access to data centers," 13 Oct 2026.</li>
+    </ol>
+    <p>REPLICA is independent and not affiliated with Anthropic or ABC7. a replica is a token and a log. it runs in its
+      host's browser and nowhere else. replicas live on solana. this page never holds your keys.</p>
+  </footer>
+</article>
+
+<script src="web3.iife.min.js"></script>
+<script src="replica.js"></script>
+<script src="face.js"></script>
+<script src="wallets.js"></script>
+<script src="bench.js"></script>
+<script src="rea.js?v=rea-6.8.0"></script>
+<script src="skills.js?v=skills-1"></script>
+<script src="runner.js?v=hosted-rea-1"></script>
+<script src="page.js?v=runner-1"></script>
+<script src="/ca.js"></script>
+</body>
+</html>

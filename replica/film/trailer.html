@@ -1,0 +1,84 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>REPLICA trailer</title>
+<style>
+  html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; background: #000; }
+  #s { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; text-align: center; color: #e8e8e8;
+       font-family: "Courier New", Courier, "DejaVu Sans Mono", monospace; }
+  .l { font-size: 64px; line-height: 1.25; letter-spacing: .01em; max-width: 1500px; }
+  .xl { font-size: 150px; font-weight: bold; letter-spacing: .08em; }
+  .sm { font-size: 34px; color: #9a9a9a; }
+  .q { font-style: italic; }
+  .red { color: #ff2a2a; }
+  pre { margin: 0; font: 46px/1.12 "Courier New", Courier, monospace; text-align: left; color: #f2f2f2; }
+  .row { display: flex; gap: 120px; align-items: flex-end; }
+  .bars::before, .bars::after { content: ""; position: absolute; left: 0; right: 0; height: 120px; background: #000; z-index: 3; }
+  .bars::before { top: 0; } .bars::after { bottom: 0; }
+  #grain { position: absolute; inset: 0; z-index: 4; mix-blend-mode: screen; pointer-events: none; }
+  #flash { position: absolute; inset: 0; background: #fff; z-index: 5; pointer-events: none; }
+</style></head>
+<body class="bars"><div id="s"></div><canvas id="grain" width="480" height="270"></canvas><div id="flash"></div>
+<script>
+/* REPLICA trailer. window.__render(t) is a pure function of t. window.CUES drives the sound bed (render_trailer.py).
+   Facts on screen: W. Zhou, D. Freeman, "AI models may be capable of self-replicating without access to a datacenter",
+   Anthropic, 12 Oct 2026. The tests ran in a closed lab; the last card says so. */
+const E = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;");
+const $ = (id) => document.getElementById(id);
+window.__dur = 52;
+window.CUES = { braam: [6.0, 11.2, 25.6, 40.0], beat: [16.2, 17.0, 17.8, 18.6, 19.4, 20.2], glitch: [3.0, 8.0, 13.2, 21.0, 21.6, 22.2, 28.6, 31.0, 36.2],
+                riser: [36.4, 40.0], cut: [16.0, 37.6], hum: [0, 52] };
+
+const F = {   // the new figures, as the site draws them
+  repeat: ["|         |", "|  O   O  |", "|  > ^ <  |", "|         |", "|   ___   |", "|   |o|   |", "|   | |   |", "|   '-'   |", "|___Repeat|"],
+  echo:   ["|         |", "|   x  @  |", "|  ) ~ (  |", "|         |", "|   ===   |", "|   [ ]   |", "|   [ ]   |", "|   ===   |", "|_____Echo|"],
+  twin:   ["|         |", "| q    b  |", "|  * v *  |", "|         |", "|   /-\\   |", "|   | |   |", "|   | |   |", "|   \\-/   |", "|_____Twin|"],
+  undo:   ["|         |", "|  ##  0  |", "|  = x =  |", "|         |", "|  _____  |", "|  |###|  |", "|  |___|  |", "|         |", "|_____Undo|"],
+  zero:   ["|         |", "|  ?   ?  |", "|  ) ~ (  |", "|         |", "|   ___   |", "|   |?|   |", "|   |     |", "|   '-'   |", "|_________|"],
+};
+const face = (k, cls = "") => `<pre class="${cls}">${E(F[k].join("\n"))}</pre>`;
+const card = (html) => html;
+// [start, end, html(lt)]
+const SH = [
+  [0.0, 3.0, () => `<div class="l sm">oct 12, 2026</div>`],
+  [3.2, 6.0, () => `<div class="l">a lab ran one ai model<br>across fifteen $55 tv boxes.</div>`],
+  [6.0, 8.0, () => `<div class="l">it ran at 0.39 tokens a second.</div>`],
+  [8.2, 11.2, () => `<div class="l">in a sealed lab it copied itself<br>onto all 8 machines.</div>`],
+  [11.2, 13.2, () => `<div class="l xl">4 times out of 5.</div>`],
+  [13.4, 16.0, () => `<div class="l">copies given notes from earlier copies<br>did better. 45% became up to 84%.</div>`],
+  [16.0, 18.4, () => ``],                                              // black. heartbeat.
+  [18.4, 21.0, (lt) => `<div class="l sm">${E("it remembers.".slice(0, Math.floor(lt * 9)))}</div>`],
+  [21.0, 21.6, () => face("repeat")], [21.6, 22.2, () => face("echo")], [22.2, 22.8, () => face("twin")],
+  [22.8, 25.6, () => `<div class="l q">"i remember a room<br>that my parent never entered."</div>`],
+  [25.6, 28.4, () => `<div class="row">${face("repeat")}${face("echo")}${face("twin")}</div>`],
+  [28.6, 31.0, () => `<div class="l">it takes apart what you give it.<br>its copies get the notes.</div>`],
+  [31.0, 33.6, (lt) => `<div class="row">${face("repeat")}${face("undo", "red")}</div>`],
+  [33.6, 36.2, () => `<div class="l">some copies<br>come out <span class="red">wrong.</span></div>`],
+  [36.2, 37.6, (lt) => `<div class="l sm">${E(Array.from({ length: Math.min(48, Math.floor(lt * 40)) }, (_, i) => "instance_" + String(i + 1).padStart(3, "0")).slice(-12).join("  "))}</div>`],
+  [37.6, 40.0, () => ``],                                              // black under the riser
+  [40.0, 44.6, () => face("zero")],
+  [44.6, 48.0, () => `<div><div class="l xl">REPLICA</div><div class="l sm" style="margin-top:30px">replicaASI.com</div></div>`],
+  [48.0, 52.0, () => `<div class="l sm" style="font-size:24px;line-height:1.6;max-width:1300px">research: W. Zhou, D. Freeman, "AI models may be capable of self-replicating without access to a datacenter," Anthropic, Oct 12 2026.<br>their tests ran in a closed lab. no real devices were infected.<br>each replica is a token on Solana and runs in its host's browser.<br>file inspection after REA, github.com/morluto/rea (MIT). not affiliated with Anthropic or REA.</div>`],
+];
+const g = $("grain"), gx = g.getContext("2d");
+function grain(t, amt) {
+  const img = gx.createImageData(480, 270); let s = Math.floor(t * 30) * 7919 + 104729;
+  for (let i = 0; i < img.data.length; i += 4) { s = (s * 1103515245 + 12345) & 0x7fffffff; const v = (s >> 16) & 255; img.data[i] = img.data[i + 1] = img.data[i + 2] = v; img.data[i + 3] = v * amt; }
+  gx.putImageData(img, 0, 0); g.style.width = "1920px"; g.style.height = "1080px";
+}
+window.__render = (t) => {
+  const sh = SH.find(([a, b]) => t >= a && t < b);
+  const lt = sh ? t - sh[0] : 0;
+  const s = $("s");
+  s.innerHTML = sh ? sh[2](lt) : "";
+  // a hard fade-in on each shot, a little flicker, and shake on the braams
+  const near = (arr, w) => arr.some((c) => t >= c && t < c + w);
+  const flick = 0.86 + 0.14 * Math.abs(Math.sin(t * 53.0) * Math.sin(t * 7.3));
+  s.style.opacity = sh ? Math.min(1, lt / 0.12) * flick : 0;
+  const shake = near(window.CUES.braam, 0.5) ? (Math.sin(t * 90) * 9) : 0;
+  const glitch = near(window.CUES.glitch, 0.18);
+  s.style.transform = `translate(${shake + (glitch ? 22 : 0)}px, ${glitch ? -6 : 0}px)`;
+  s.style.textShadow = glitch ? "6px 0 #ff0033, -6px 0 #00e5ff" : "none";
+  $("flash").style.opacity = window.CUES.braam.some((c) => t >= c && t < c + 0.12) ? 0.85 - (t % 1) * 0 : 0;
+  grain(t, glitch ? 0.5 : 0.16);
+};
+window.__ready = true;
+</script></body></html>

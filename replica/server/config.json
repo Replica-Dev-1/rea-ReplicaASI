@@ -1,0 +1,17 @@
+{
+ "draft": false,
+ "ticker": "REPLICA",
+ "seed_name": "REPLICA",
+ "chain_name": "Solana",
+ "cluster": "mainnet-beta",
+ "rpc": "https://api.mainnet-beta.solana.com",
+ "explorer": "https://solscan.io",
+ "coin_ticker": "Replica",
+ "gate_token": "6zyjCeCqa2RTkc8pR9BDnaEHjKVSqRYEEen8x1s3pump",
+ "claim_min_balance": 0,
+ "profiles": [
+  {"name": "pump.fun", "url": "https://pump.fun/profile/{wallet}"},
+  {"name": "solscan", "url": "https://solscan.io/account/{wallet}"}
+ ],
+ "public_base": "https://replicaasi.com"
+}

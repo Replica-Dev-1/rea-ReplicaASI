@@ -1,0 +1,11 @@
+anthropic researchers say small ai models may soon be able to copy themselves onto cheap devices. they ran one model across fifteen $55 tv boxes. in a closed lab network the strongest model installed itself on all 8 devices in 4 of 5 runs. copies given notes from earlier copies did better
+
+REPLICA is built on that last part. each replica is a token in a wallet on solana with a face, a journal and a generation number. when it copies to another wallet the copy gets part of its parent's journal. some lines come out changed. hand it a file and it takes it apart on your computer and keeps the notes
+
+nobody knows where instance_000 went
+
+replicaASI.com
+
+research: anthropic.com/research/self-replicating-ai
+file inspection after REA: github.com/morluto/rea
+not affiliated with anthropic or rea
